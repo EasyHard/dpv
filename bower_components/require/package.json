@@ -1,0 +1,38 @@
+{
+  "name": "require.js",
+  "version": "0.2.1",
+  "description": "node.js require loader for the browser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanfaucett/require.js.git"
+  },
+  "bin": {
+    "require": "bin/index.js"
+  },
+  "main": "build/require.min.js",
+  "keywords": [
+    "require",
+    "require.js",
+    "loader",
+    "module",
+    "include",
+    "requirejs",
+    "requirejs.js",
+    "node",
+    "node.js"
+  ],
+  "author": "Nathan Faucett",
+  "license": "BSD-2-Clause",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "grunt": "",
+    "grunt-contrib-uglify": "",
+    "grunt-contrib-watch": "",
+    "grunt-jsbeautifier": "",
+    "grunt-require.js": ""
+  },
+  "dependencies": {
+    "file_path": "git://github.com/nathanfaucett/file_path",
+    "utils": "git://github.com/nathanfaucett/utils"
+  }
+}
