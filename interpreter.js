@@ -1,0 +1,1 @@
+/home/easyhard/Explore/JS-Interpreter/interpreter.js
