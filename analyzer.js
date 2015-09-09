@@ -4,37 +4,84 @@ function StackAnalyzer (interpreter) {
   this.initData();
   this.startPoints = [];
   this.stackAnalyze();
-  this.bfsFrom(this.startPoints);
+  this.bfs(this.startPoints, 'deps', 'depth', 'p');
   this.findArgumentRange();
+  this.findRdep();
+  this.topoFromBoundary();
 }
+
+function ItemSet() {
+  this.set = {};
+  this.has = function (item) {
+    return this.set[item.func] && this.set[item.func][item.args];
+  };
+  this.add = function (item) {
+    this.set[item.func] = this.set[item.func] || {};
+    this.set[item.func][item.args] = true;
+  };
+}
+
+StackAnalyzer.prototype.topoFromBoundary = function () {
+  var starts = [];
+  for (var func in this.data) {
+    for (var args in this.data[func]) {
+      var item = this.data[func][args];
+      if (this.isBoundary(item))
+        starts.push(item);
+      item.Nunsolved = item.deps.length;
+    }
+  }
+  var queue = [];
+  starts.forEach(function (item) {
+    queue.push(item);
+  });
+  while (queue.length) {
+    var curr = queue.shift();
+    curr.topoDepth = 0;
+    curr.deps.forEach(function (dep) {
+      curr.topoDepth = Math.max(curr.topoDepth, dep.topoDepth + 1);
+    });
+    delete curr.Nunsolved;
+    curr.rdeps.forEach(function (rdep) {
+      rdep.Nunsolved -= 1;
+      if (rdep.Nunsolved === 0) {
+        queue.push(rdep);
+      }
+    });
+  }
+};
+
+StackAnalyzer.prototype.findRdep = function () {
+  for (var func in this.data) {
+    for (var args in this.data[func]) {
+      var item = this.data[func][args];
+      item.deps.forEach(function (dep) {
+        dep.rdeps.push(item);
+      });
+    }
+  }
+};
 
 StackAnalyzer.prototype.isBoundary = function (item) {
   return item.deps.length === 0;
 };
 
-StackAnalyzer.prototype.bfsFrom = function (startPoints) {
+StackAnalyzer.prototype.bfs = function (startPoints, edgeField, depthField, parentField) {
   var queue = [];
-  var inq = {};
-  function has(item) {
-    return inq[item.func] && inq[item.func][item.args];
-  }
-  function add(item) {
-    inq[item.func] = inq[item.func] || {};
-    inq[item.func][item.args] = true;
-  }
+  var inq = new ItemSet();
   startPoints.forEach(function (item) {
-    item.depth = 0;
+    item[depthField] = 0;
     queue.push(item);
-    add(item);
+    inq.add(item);
   }.bind(this));
   while (queue.length) {
     var curr = queue.shift();
-    curr.deps.forEach(function (dep) {
-      if (!has(dep)) {
+    curr[edgeField].forEach(function (dep) {
+      if (!inq.has(dep)) {
         queue.push(dep);
-        dep.depth = curr.depth + 1;
-        dep.p.push(curr);
-        add(dep);
+        dep[depthField] = curr[depthField] + 1;
+        dep[parentField].push(curr);
+        inq.add(dep);
       }
     });
   }
@@ -51,6 +98,7 @@ StackAnalyzer.prototype.initData = function () {
       this.data[funcname][args] = {
         value: funcmemo[args].data,
         deps: [],
+        rdeps: [],
         p: [],
         args: args,
         func: funcname

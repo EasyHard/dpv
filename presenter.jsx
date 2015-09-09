@@ -1,12 +1,22 @@
 var Components = Components || {};
 
-function BFSAnimator(analyzer, funcs, options) {
+function Animator(analyzer, funcs, options) {
     this.analyzer = analyzer;
     this.funcs = funcs;
     options = options || {};
     options.duration = options.duration || 10000;
     this.options = options;
+}
+
+function BFSAnimator(analyzer, funcs, options) {
+    Animator.apply(this, arguments);
+    // this.analyzer = analyzer;
+    // this.funcs = funcs;
+    // options = options || {};
+    // options.duration = options.duration || 10000;
+    // this.options = options;
 };
+
 
 BFSAnimator.prototype.start = function () {
     // bfs from start coloring
@@ -27,6 +37,30 @@ BFSAnimator.prototype.start = function () {
         .style("fill-opacity", 100);
     }
 };
+
+function TopoAnimator() {
+    Animator.apply(this, arguments);
+}
+
+TopoAnimator.prototype = new Animator();
+TopoAnimator.prototype.start = function () {
+    var maxDepth = Number.MIN_SAFE_INTEGER;
+    for (var func in this.analyzer.data) {
+        for (var args in this.analyzer.data[func]) {
+            var d = this.analyzer.data[func][args];
+            if (d) maxDepth = Math.max(maxDepth, d.topoDepth);
+        }
+    }
+    var speed = this.options.duration / maxDepth;
+    for (var func in this.funcs) {
+        var svg = this.funcs[func].svg;
+        svg.selectAll("rect").transition()
+        .delay(function (d) { if (d) return d.topoDepth * speed})
+        .duration(speed*3)
+        .style("fill", function (d) { if (d) return d3.rgb(255 - 160/maxDepth*d.topoDepth, 255, 160/maxDepth*d.topoDepth);})
+        .style("fill-opacity", 100);
+    }
+}
 
 Components.Presenter = React.createClass({
     getDefaultProps: function() {
@@ -58,10 +92,11 @@ Components.Presenter = React.createClass({
             }
             var h = this.props.heightForSVG;
             var w = this.props.widthForSVG;
-            var ch = Math.min(h / nRow, ch);
-            var cw = Math.min(w / nCol, cw);
+            var ch = Math.floor(Math.min(h / nRow, ch));
+            var cw = Math.floor(Math.min(w / nCol, cw));
             console.log('nRow', nRow, 'nCol', nCol);
             svg.attr("width", w).attr("height", h);
+            var self = this;
             var data = d3.range(nRow * nCol);
             data = data.map(function (d) {
                 var r = Math.floor(d / nCol);
@@ -79,10 +114,28 @@ Components.Presenter = React.createClass({
                 }
             }.bind(this));
             svg.selectAll("rect").data(data).enter().append("rect")
+            .classed("rect-boundry", function (d) {
+                if (!d) return false;
+                return d.deps.length === 0;
+            })
             .attr("width", cw).attr("height", ch).style("fill", d3.rgb(255, 255, 255)).style("fill-opacity", 0)
             .attr("transform", function translate(d) {
                 if (d)
                     return "translate(" + d.c * cw + "," + d.r * ch + ")";
+            })
+            .on("mouseout", function (d) {
+                d3.select("#"+self.props.svgdiv).selectAll("svg").selectAll("rect").classed("rect-selected", false);
+            })
+            .on("mouseover", function (d) {
+                d3.select("#"+self.props.svgdiv).selectAll("svg").selectAll("rect").classed("rect-selected",
+                    function (od) {
+                        if (!od) return false;
+                        var isdep = false;
+                        d.deps.forEach(function (dep) {
+                            isdep = isdep || dep.func === od.func && dep.args === od.args;
+                        });
+                        return isdep || od.func === d.func && od.args === d.args;
+                    });
             });
             this.funcs[func] = {
                 h: h,
@@ -96,7 +149,7 @@ Components.Presenter = React.createClass({
             };
         }
         // init animators
-        this.animator = new BFSAnimator(this.analyzer, this.funcs);
+        this.animator = new TopoAnimator(this.analyzer, this.funcs);
         this.animator.start();
 
     },
