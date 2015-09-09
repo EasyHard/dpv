@@ -18,7 +18,7 @@ Components.Editor = React.createClass({
         this.waitForChange = Number(this.props.waitForChange);
         this.interpreterTimer = null;
         if (window.Worker) {
-            this.worker = new Worker('/interpreterWorker.js');
+            this.worker = new Worker('./interpreterWorker.js');
             this.worker.onmessage = this.handleMessage;
         }
     },
