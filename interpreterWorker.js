@@ -1,4 +1,4 @@
-importScripts('/analyzer.js', '/deps/interpreter/acorn.js', '/deps/interpreter/interpreter.js');
+importScripts('./analyzer.js', './deps/interpreter/acorn.js', './deps/interpreter/interpreter.js');
 onmessage = function (event) {
   var code = event.data;
   // TODO: Interpreter needs a timeout in case it never halt.
