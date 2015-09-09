@@ -1,79 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-<style type="text/css" media="screen">
-    #code {
-        height: 600px;
-        font-size: 32px;
-    }
-    /* .memo-border { */
-    /*     background: grey; */
-    /* } */
-    .animate-solving {
-        background: rgba(16, 16, 255, 0.2);
-    }
-    .animate-solving-top {
-        background: cyan;
-    }
-    .animate-depending {
-        background: yellow;
-    }
-    .animate-unsolved {
-        color: grey;
-    }
-    .animate-solved {
-        color: black;
-        font-weight: bold;
-    }
-</style>
     <meta charset="UTF-8" />
-    <title>DP</title>
-  </head>
-  <body>
-    <div id="code">
-var maxr = 5;
-var maxc = 5;
-var height = [
-    [1, 2, 3, 4, 5],
-    [16, 17, 18, 19, 6],
-    [15, 24, 25, 20, 7],
-    [14, 23, 22, 21, 8],
-    [13, 12, 11, 10, 9]
-];
-var d = [
-    {r: -1, c: 0},
-    {r: 1, c: 0},
-    {r: 0, c: -1},
-    {r: 0, c: 1}
-];
-
-memofunction l(row, col) {
-    var answer = 1;
-    var currHeight = height[row][col];
-    for (var i = 0; i < 4; i++) {
-        var nr = d[i].r + row;
-        var nc = d[i].c + col;
-        if (nr < 0 || nc < 0 || nr >= maxr || nc >= maxc) {
-            continue;
-        }
-        if (height[nr][nc] < currHeight) {
-            answer = answer >= l(nr, nc) + 1 ? answer : l(nr, nc) + 1;
-        }
+    <title>List in React Demo</title>
+    <!-- react -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- bootstraap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- ace -->
+    <script src="/deps/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <!-- d3 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <!-- custom data -->
+    <script src="/data.js" type="text/javascript" charset="utf-8"></script>
+    <!-- analyzer -->
+    <script src="/analyzer.js" type="text/javascript" charset="utf-8"></script>
+    <!-- interpreter -->
+    <script src="/deps/interpreter/interpreter.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+    #editor-wrap {
     }
-    return answer;
+#editor {
+    height: 300px;
+    width: 100%;
+    font-size: 14px;
 }
 
-l(2, 2);
-    </div>
-    <script src="./ace-builds/src/ace.js"></script>
-    <script src="./acorn.js"></script>
-    <script src="./interpreter.js"></script>
-    <script src="./dptable.js"></script>
-    <script src="./bower_components/jquery/dist/jquery.js"></script>
-    <script src="./bower_components/underscore/underscore.js"></script>
-    <script src="./bower_components/backbone/backbone.js"></script>
-    <script src="utils.js"></script>
-    <div id='result'> result in here</div>
-    <script src="./test.js"></script>
+rect {
+  stroke: #fff;
+  stroke-width: .1px;
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <div id="editor-wrap"> </div>
+    <script type="text/jsx" src="filelist.jsx"> </script>
+    <script type="text/jsx" src="editor.jsx"> </script>
+    <div id="svg-container"></div>
   </body>
 </html>

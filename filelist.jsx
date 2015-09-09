@@ -1,16 +1,23 @@
 var Components = Components || {};
+Components.FileButton = React.createClass({
+    render: function() {
+        return (
+            <button type="button" className={this.props.buttonClass + " list-group-item"} onClick={this.handleClick}>{this.props.filetitle}</button>
+        );
+    },
+    handleClick: function (event) {
+        this.props.onClick(this.props.filetitle);
+    }
+});
+
 Components.FileList = React.createClass({
     getInitialState: function () {
-        return {files: [
-            {title: "file title 1"},
-            {title: "file title 2"},
-            {title: "file title 3"},
-        ]};
+        return { files: Data.files };
     },
     render: function () {
         var buttons = this.state.files.map(function (file) {
             return (
-               <button type="button" className={this.props.buttonClass + " list-group-item"} >{file.title}</button>
+                <Components.FileButton key={file.title} buttonClass={this.props.buttonClass} filetitle={file.title} onClick={this.props.onClick}/>
             );
         }.bind(this));
         return (

@@ -136,7 +136,17 @@ Interpreter.prototype.initGlobalScope = function(scope) {
   func.eval = true;
   this.setProperty(func, 'length', this.createPrimitive(1), true);
   this.setProperty(scope, 'eval', func);
-  var glob = typeof window !== 'undefined' ? window : global;
+  var glob;
+  if (typeof window !== 'undefined') {
+    glob = window;
+  } else if (typeof global !== 'undefined') {
+    glob = global;
+  } else if (typeof self !== 'undefined') {
+    glob = self;
+  } else {
+    throw new Error('can not find global object.');
+  }
+
   var strFunctions = ['escape', 'unescape',
                       'decodeURI', 'decodeURIComponent',
                       'encodeURI', 'encodeURIComponent'];

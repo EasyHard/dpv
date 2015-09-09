@@ -1,0 +1,22 @@
+{
+  "name": "dpanimator",
+  "version": "0.0.0",
+  "description": "animator of your dynamic programming solution.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "animate",
+    "dynamic",
+    "programming",
+    "language"
+  ],
+  "author": "easyhard",
+  "license": "MIT",
+  "dependencies": {
+    "interpreter": "git://github.com/EasyHard/JS-Interpreter.git#dp",
+    "react": "^0.13.3",
+    "react-ace": "^2.2.1",
+    "underscore": "^1.7.0"
+  }
+}
