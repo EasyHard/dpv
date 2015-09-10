@@ -7,7 +7,7 @@ onmessage = function (event) {
   // try {
   console.log('onmessage worker');
   try {
-    interpreter.run(10000);
+    interpreter.run(30000);
   } catch (e) {
     err = e;
     postMessage({err: e.toString()});
