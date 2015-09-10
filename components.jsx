@@ -36,7 +36,7 @@ Components.FileList = React.createClass({
         var options = this.state.files.map(function (file) {return file.title});
         return (
             <div>
-            <p> File:
+            <p> Examples:
             <Components.SelectDropdown options={options} defaultValue={this.props.defaultValue} onChange={this.props.onClick} />
             </p>
             </div>
