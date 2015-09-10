@@ -10,7 +10,7 @@ var dir = process.argv[2] || "./code";
 var output = process.argv[3] || "./data.js";
 var filenames = fs.readdirSync(dir);
 
-var files = filenames.map(filename => {
+var files = filenames.filter(filename=> filename.match(/\.js$/)).map(filename => {
   return {
     content: fs.readFileSync(path.join(dir, filename), {encoding: "utf-8"}),
     title: filename
