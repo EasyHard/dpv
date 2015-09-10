@@ -128,9 +128,13 @@ StackAnalyzer.prototype.findArgumentRange = function () {
 // also mark start points.
 StackAnalyzer.prototype.stackAnalyze = function () {
   var stack = [];
-
+  var programOrder = 0;
   this.memostack.forEach(function (item) {
     if (item.op === 'pop') {
+      var topfunc = stack[0].func;
+      var topargs = stack[0].args;
+      this.data[topfunc][topargs].programOrder = programOrder;
+      programOrder += 1;
       stack.shift();
       return;
     }

@@ -1,66 +1,5 @@
 var Components = Components || {};
 
-function Animator(analyzer, funcs, options) {
-    this.analyzer = analyzer;
-    this.funcs = funcs;
-    options = options || {};
-    options.duration = options.duration || 10000;
-    this.options = options;
-}
-
-function BFSAnimator(analyzer, funcs, options) {
-    Animator.apply(this, arguments);
-    // this.analyzer = analyzer;
-    // this.funcs = funcs;
-    // options = options || {};
-    // options.duration = options.duration || 10000;
-    // this.options = options;
-};
-
-
-BFSAnimator.prototype.start = function () {
-    // bfs from start coloring
-    var maxDepth = Number.MIN_SAFE_INTEGER;
-    for (var func in this.analyzer.data) {
-        for (var args in this.analyzer.data[func]) {
-            var d = this.analyzer.data[func][args];
-            if (d) maxDepth = Math.max(maxDepth, d.depth);
-        }
-    }
-    var speed = this.options.duration / maxDepth;
-    for (var func in this.funcs) {
-        var svg = this.funcs[func].svg;
-        svg.selectAll("rect").transition()
-        .delay(function (d) { if (d) return d.depth * speed})
-        .duration(speed*3)
-        .style("fill", function (d) { if (d) return d3.rgb(255 - 160/maxDepth*d.depth, 255, 160/maxDepth*d.depth);})
-        .style("fill-opacity", 100);
-    }
-};
-
-function TopoAnimator() {
-    Animator.apply(this, arguments);
-}
-
-TopoAnimator.prototype = new Animator();
-TopoAnimator.prototype.start = function () {
-    var maxDepth = Number.MIN_SAFE_INTEGER;
-    for (var func in this.analyzer.data) {
-        for (var args in this.analyzer.data[func]) {
-            var d = this.analyzer.data[func][args];
-            if (d) maxDepth = Math.max(maxDepth, d.topoDepth);
-        }
-    }
-    var speed = this.options.duration / maxDepth;
-    for (var func in this.funcs) {
-        var svg = this.funcs[func].svg;
-        svg.selectAll("rect").transition()
-        .delay(function (d) { if (d) return d.topoDepth * speed})
-        .duration(speed*3)
-        .style("fill", function (d) { if (d) return d3.rgb(255 - 160/maxDepth*d.topoDepth, 255, 160/maxDepth*d.topoDepth);})
-        .style("fill-opacity", 100);
-    }
-}
 
 Components.Presenter = React.createClass({
     getDefaultProps: function() {
@@ -68,19 +7,21 @@ Components.Presenter = React.createClass({
             svgdiv: "presenter-svg",
             widthForSVG: 600,
             heightForSVG: 600,
-            maxZ: 30
+            maxZ: 28,
+            name: "pp",
         };
     },
     componentDidMount: function () {
+        console.log(this.props.animator);
         this.analyzer = this.props.analyzer;
 
-        d3.select("#"+this.props.svgdiv).selectAll("svg").remove();
+        d3.select("#"+this.props.svgdiv).selectAll("*").remove();
         this.funcs = {};
         for (var func in this.analyzer.range) {
             var ch = this.props.maxZ;
             var cw = this.props.maxZ;
-
-            var svg = d3.select("#"+this.props.svgdiv).append("svg");
+            $("#"+this.props.svgdiv).append($("<h4>").addClass("memofunction-title").text("memofunction " + func + " :"));
+            var svg = d3.select("#"+this.props.svgdiv).append("div").append("svg");
             var range = this.analyzer.range[func];
             var nd = range.length;
             if (nd > 2) return;
@@ -94,6 +35,8 @@ Components.Presenter = React.createClass({
             var w = this.props.widthForSVG;
             var ch = Math.floor(Math.min(h / nRow, ch));
             var cw = Math.floor(Math.min(w / nCol, cw));
+            h = ch*nRow;
+            w = cw * nCol;
             console.log('nRow', nRow, 'nCol', nCol);
             svg.attr("width", w).attr("height", h);
             var self = this;
@@ -127,6 +70,7 @@ Components.Presenter = React.createClass({
                 d3.select("#"+self.props.svgdiv).selectAll("svg").selectAll("rect").classed("rect-selected", false);
             })
             .on("mouseover", function (d) {
+                if (!d) return;
                 d3.select("#"+self.props.svgdiv).selectAll("svg").selectAll("rect").classed("rect-selected",
                     function (od) {
                         if (!od) return false;
@@ -136,6 +80,23 @@ Components.Presenter = React.createClass({
                         });
                         return isdep || od.func === d.func && od.args === d.args;
                     });
+                $(self.props.name+"-json").empty();
+                var show = {};
+                function funcall(item) {
+                    var a;
+                    if (item.args instanceof Array) {
+                        a = JSON.stringify(item.args).replace(/^\[/, '(').replace(/\]$/, '');
+                    } else {
+                        a = '( ' + item.args + ' )';
+                    }
+                    return item.func + a;
+                }
+                show.deps = d.deps.map(funcall);
+                show.rdeps = d.rdeps.map(funcall);
+                show.value = d.value;
+                show.self = funcall(d);
+                show.depth = d.topoDepth;
+                $("#"+self.props.name+"-json").append($("<pre>")).text(JSON.stringify(show, null, 4));
             });
             this.funcs[func] = {
                 h: h,
@@ -149,13 +110,21 @@ Components.Presenter = React.createClass({
             };
         }
         // init animators
-        this.animator = new TopoAnimator(this.analyzer, this.funcs);
+        this.animator = new this.props.animator.constr(this.analyzer, this.funcs);
         this.animator.start();
 
     },
     render: function () {
         return (
+            <div>
+            <div><h4> Animator explaination: </h4>
+            <p>{this.props.animator.comment}</p>
+            </div>
             <div id={this.props.svgdiv}> </div>
+            <pre>
+            <code id={this.props.name + "-json"}> </code>
+            </pre>
+            </div>
         )
     }
 

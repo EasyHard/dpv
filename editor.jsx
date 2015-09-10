@@ -28,16 +28,24 @@ Components.Editor = React.createClass({
             console.log('worker error:', e.data.err);
         } else {
             this.analyzer = e.data.analyzer;
-            React.unmountComponentAtNode(document.getElementById('presenter'));
-            React.render(<Components.Presenter analyzer={this.analyzer} />, document.getElementById('presenter'));
+            this.present();
         }
+    },
+    present: function () {
+        console.log('value', this.refs.pickAnimator.value);
+        React.unmountComponentAtNode(document.getElementById('presenter'));
+        React.render(<Components.Presenter analyzer={this.analyzer} animator={animators[this.refs.pickAnimator.value]}/>, document.getElementById('presenter'));
+    },
+    optionChange: function () {
+
     },
     render: function () {
         return (
             <div>
-            <Components.FileList onClick={this.openFile} > </Components.FileList>
-            <div id={this.props.name} />
-            </div>
+            <Components.FileList onClick={this.openFile} defaultValue={this.props.defaultFile} > </Components.FileList>
+            <p>Animator: <Components.SelectDropdown options={Object.keys(animators)} ref="pickAnimator" defaultValue="topo" onChange={this.present} /></p>
+            <div id={this.props.name} /> </div>
+
         );
     },
     openFile: function (fileTitle) {
