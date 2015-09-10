@@ -42,17 +42,44 @@ rect {
     stroke: rgb(210, 210, 210);
 }
 
+.rect-boundry-example {
+  stroke-width: 3px;
+}
+
 .rect-selected {
     opacity: 0.3;
     stroke-width: 1px;
 }
+
+.rect-first {
+    fill: rgb(255, 255, 160);
+}
+.rect-last {
+    fill: rgb(95, 255, 0);
+}
     </style>
   </head>
   <body>
-    <div id="content"></div>
-    <div id="editor-wrap"> </div>
-    <div id="presenter"></div>
-    <div id="test"> </div>
+    <div id="container" class="container">
+
+      <div>
+        <h2>Overview</h2>
+        <p>This is a visualizer designed for showing dynamic programming solution.</p>
+        <p>To visualize your solution, you need to implment it in JavaScript, and declare the memoizating function by `memofunction`, rather than `function`, as in the examples. Note that the memoization of `memofunction` is done automatically. After that, you can animate your solution with our animators! Enjoy.</p>
+        <p>For underlying details, a more detailed introduction, source code, or feedbacks, please refer to <a href="https://github.com/easyhard/dpv/tree/gh-pages">its github repo</a></p>
+        <p>This is an ongoing projects. So there are bugs and limitations. Feel free to complain(>_<) or check them out on the ReadMe in Github. Have Fun! </p>
+      </div>
+
+      <div>
+        <h2>Visualizer</h2>
+        <div style="padding-left: 4px;">
+          <div id="content"></div>
+          <div id="editor-wrap"> </div>
+          <div id="presenter"></div>
+          <div id="test"> </div>
+        </div>
+      <div>
+    </div>
     <script type="text/jsx" src="components.jsx"> </script>
     <script type="text/jsx" src="presenter.jsx"> </script>
     <script type="text/jsx" src="editor.jsx"> </script>
