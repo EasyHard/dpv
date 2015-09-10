@@ -1,3 +1,6 @@
+/**
+ * Find the longest moving down strike on a 2D map.
+ **/
 var maxr = 5;
 var maxc = 5;
 var height = [

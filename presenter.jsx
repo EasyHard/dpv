@@ -45,8 +45,8 @@ Components.Presenter = React.createClass({
                 var r = Math.floor(d / nCol);
                 var c = d % nCol;
                 var args;
-                if (nd === 1) args = [c];
-                else args = [r, c];
+                if (nd === 1) args = [c + range[nd-1].min];
+                else args = [r + range[nd-2].min, c + range[nd-1].min];
                 if (this.analyzer.data[func][args]) {
                     this.analyzer.data[func][args].r = r;
                     this.analyzer.data[func][args].c = c;
@@ -61,10 +61,14 @@ Components.Presenter = React.createClass({
                 if (!d) return false;
                 return d.deps.length === 0;
             })
-            .attr("width", cw).attr("height", ch).style("fill", d3.rgb(255, 255, 255)).style("fill-opacity", 0)
+            .attr("width", cw).attr("height", ch).style("fill", d3.rgb(255, 255, 255)).style("fill-opacity", function (d) {
+                if (!d) return 0;
+                else return 100;
+            })
             .attr("transform", function translate(d) {
                 if (d)
                     return "translate(" + d.c * cw + "," + d.r * ch + ")";
+                else return "translate(" + nCol * cw + "," + nRow * ch + ")";
             })
             .on("mouseout", function (d) {
                 d3.select("#"+self.props.svgdiv).selectAll("svg").selectAll("rect").classed("rect-selected", false);

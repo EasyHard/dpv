@@ -26,7 +26,8 @@ function depthAnimator(depthField) {
         .delay(function (d) { if (d) return d[depthField] * speed})
         .duration(speed*3)
         .style("fill", function (d) { if (d) return d3.rgb(255 - 160/maxDepth*d[depthField], 255, 160/maxDepth*d[depthField]);})
-        .style("fill-opacity", 100);
+        .style("z-index", function (d) {return d ? 1 : -Number.MAX_SAFE_INTEGER;})
+        .style("fill-opacity", function (d) {if (d) return 100; else return 0;});
     }
   };
   return AnimatorClass;
