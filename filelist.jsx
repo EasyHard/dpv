@@ -1,1 +1,0 @@
-var Components = Components || {};
