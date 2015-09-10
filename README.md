@@ -64,15 +64,23 @@ can not be visualize.
 
 There are also two features I have not implemented yet.
 
-* Find out input-independent dependencies.
+Find out input-independent dependencies.
+====
 For now only run-time dependencies are captured since dependencies are referred by stack trace. For
 problems like 0-1 knapsack, function calls could be ruled out for the current input, but happened
 in other inputs. Capturing these dependencies are also important.
 
-One way is to 
+One solution is doing static analysis. I think of another solution I feel like I can give it a shot.
+Every time the interpreter runs into a `if` statement that its condition is not `true`, instead of
+skipping it, we can run into the statement (even it should not) with a fake scope the same as the
+current one. The fake scope is a deep copy or Copy-on-write copy of the current one, so it will not
+make any effects on the regular execution process, but we can still gather information we need in
+that `if` statement.
 
-* "Best" solving order
+"Best" solving order
+======
 Many dynamic programming solutions could be implemented with rolling an array to reduce space
 requirement. To demonstrate such possibility, I want to animator the the solving process with
 a "best" trace. By "best" here it means with minimum memory footprint. I feel this feature
-could be very useful. Feel free to open an issue or contact me if you have any idea.
+could be very useful. I am still working on finding a more clear definition of "best" so that
+I can optimize on it. Feel free to open an issue or contact me if you have any idea.
