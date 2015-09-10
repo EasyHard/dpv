@@ -123,6 +123,19 @@ Components.Presenter = React.createClass({
             <div>
             <div><h4> Animator explaination: </h4>
             <p>{this.props.animator.comment}</p>
+            <div><spanning><svg width="30px" height="30px">
+            <rect width="30px" height="30px" className="rect-boundry rect-boundry-example" style={{fill:"white"}} />
+            </svg> Boundary </spanning>
+
+            <spanning><svg width="30px" height="30px">
+            <rect width="30px" height="30px" className="rect-first" />
+            </svg> First Element </spanning>
+
+            <spanning><svg width="30px" height="30px">
+            <rect width="30px" height="30px" className="rect-last" />
+            </svg> Last Element </spanning>
+
+            </div>
             </div>
             <div id={this.props.svgdiv}> </div>
             <pre>
