@@ -9,6 +9,20 @@ Components.Editor = React.createClass({
             defaultFile: "fib.js",
         };
     },
+    getInitialState: function () {
+        return {
+            interpreterStatus: "idle"
+        };
+    },
+    getInterpreterMessage: function () {
+        if (this.state.interpreterStatus === "idle") {
+            return "Idle......";
+        } else if (this.state.interpreterStatus === "running") {
+            return "Running......";
+        } else {
+            return "Error: " + this.state.interpreterError.toString();
+        }
+    },
     componentDidMount: function () {
         this.editor = ace.edit(this.props.name);
         this.editor.setTheme(this.props.theme);
@@ -26,7 +40,9 @@ Components.Editor = React.createClass({
         console.log('onmesssage back');
         if (e.data.err) {
             console.log('worker error:', e.data.err);
+            this.setState({interpreterStatus: 'error', interpreterError: e.data.err});
         } else {
+            this.setState({interpreterStatus: 'idle'});
             this.analyzer = e.data.analyzer;
             this.present();
         }
@@ -36,15 +52,18 @@ Components.Editor = React.createClass({
         React.unmountComponentAtNode(document.getElementById('presenter'));
         React.render(<Components.Presenter analyzer={this.analyzer} animator={animators[this.refs.pickAnimator.value]}/>, document.getElementById('presenter'));
     },
-    optionChange: function () {
-
-    },
     render: function () {
         return (
             <div>
             <Components.FileList onClick={this.openFile} defaultValue={this.props.defaultFile} > </Components.FileList>
-            <p>Animator: <Components.SelectDropdown options={Object.keys(animators)} ref="pickAnimator" defaultValue="topo" onChange={this.present} /></p>
-            <div id={this.props.name} /> </div>
+            <div id={this.props.name}> </div>
+            <h3>Interperter Status:</h3>
+            <code>
+            <p>{this.getInterpreterMessage()}</p>
+            </code>
+            <p>Animator: <Components.SelectDropdown options={Object.keys(animators)} ref="pickAnimator" defaultValue="topo" onChange={this.present} />
+            </p>
+            </div>
 
         );
     },
@@ -70,6 +89,7 @@ Components.Editor = React.createClass({
     },
     issueInterpreter: function () {
         this.interpreterTimer = null;
+        this.setState({interpreterStatus: 'running'});
         this.worker.postMessage(this.editor.getValue());
     },
 });

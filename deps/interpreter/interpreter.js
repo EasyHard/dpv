@@ -61,8 +61,23 @@ Interpreter.prototype.step = function() {
 /**
  * Execute the interpreter to program completion.
  */
-Interpreter.prototype.run = function() {
-  while(this.step()) {};
+Interpreter.prototype.run = function(timeout) {
+  if (!timeout) {
+    while(this.step()) {};
+  } else {
+    var startTime = Date.now();
+    var nStep = 0;
+    while(this.step()) {
+      nStep++;
+      if (nStep === 5000) {
+        var now = Date.now();
+        if (now - startTime > timeout) {
+          throw new Error("interperter timeout. Duration: " + (now - startTime));
+        }
+        nStep = 0;
+      }
+    };
+  }
 };
 
 /**

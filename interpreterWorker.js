@@ -3,9 +3,16 @@ onmessage = function (event) {
   var code = event.data;
   // TODO: Interpreter needs a timeout in case it never halt.
   var interpreter = new Interpreter(code);
+  var err;
   // try {
   console.log('onmessage worker');
-  interpreter.run();
+  try {
+    interpreter.run(10000);
+  } catch (e) {
+    err = e;
+    postMessage({err: e.toString()});
+  }
+  if (err) return;
   console.log('after run');
   var analyzer = new StackAnalyzer(interpreter);
   console.log('ana');
