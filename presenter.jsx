@@ -38,7 +38,7 @@ Components.Presenter = React.createClass({
             h = ch*nRow;
             w = cw * nCol;
             console.log('nRow', nRow, 'nCol', nCol);
-            svg.attr("width", w).attr("height", h);
+            svg.attr("width", w + 80).attr("height", h + 80);
             var self = this;
             var data = d3.range(nRow * nCol);
             data = data.map(function (d) {
@@ -56,7 +56,7 @@ Components.Presenter = React.createClass({
                     return null;
                 }
             }.bind(this));
-            svg.selectAll("rect").data(data).enter().append("rect")
+            svg.append("g").attr("transform", "translate(40, 40)").selectAll("rect").data(data).enter().append("rect")
             .classed("rect-boundry", function (d) {
                 if (!d) return false;
                 return d.deps.length === 0;
@@ -102,6 +102,12 @@ Components.Presenter = React.createClass({
                 show.reversedDependencies = d.rdeps.map(funcall);
                 $("#"+self.props.name+"-json").append($("<pre>")).text(JSON.stringify(show, null, 2));
             });
+            // adding text
+            var textMin, textMax;
+            textMin = func + "(" + range.map(function (r) {return r.min}).join(", ") + ")";
+            textMax = func + "(" + range.map(function (r) {return r.max}).join(",") + ")";
+            svg.select("g").append("text").attr("transform", "translate(-10, -10)").text(textMin);
+            svg.select("g").append("text").attr("transform", "translate(" + (w-20) + "," + (h+20) + " )").text(textMax);
             this.funcs[func] = {
                 h: h,
                 w: w,
@@ -139,7 +145,7 @@ Components.Presenter = React.createClass({
 
             <div id={this.props.svgdiv} style={{float:"left"}}> </div>
 
-            <div  style={{float:"left", "margin-top":"32px", "margin-left":"16px"}}><pre>
+            <div  style={{float:"left", "padding-top":"80px", "margin-left":"16px"}}><pre>
             <code id={this.props.name + "-json"}> </code>
             </pre></div>
 
