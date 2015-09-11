@@ -57,12 +57,14 @@ Components.Editor = React.createClass({
             <div>
             <Components.FileList onClick={this.openFile} defaultValue={this.props.defaultFile} > </Components.FileList>
             <div id={this.props.name}> </div>
-            <h3>Interperter Status:</h3>
             <code>
-            <p>{this.getInterpreterMessage()}</p>
+            Interperter Status: {this.getInterpreterMessage()}
             </code>
-            <p>Animator: <Components.SelectDropdown options={Object.keys(animators)} ref="pickAnimator" defaultValue="topo" onChange={this.present} />
+            <div style={{"padding-top":"14px"}} >
+            <p>
+            <h4><b>Pick a Animator: <Components.SelectDropdown options={Object.keys(animators)} ref="pickAnimator" defaultValue="topo" onChange={this.present} /> </b></h4>
             </p>
+            </div>
             </div>
 
         );
