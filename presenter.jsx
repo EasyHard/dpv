@@ -95,12 +95,12 @@ Components.Presenter = React.createClass({
                     }
                     return item.func + a;
                 }
-                show.deps = d.deps.map(funcall);
-                show.rdeps = d.rdeps.map(funcall);
-                show.value = d.value;
                 show.self = funcall(d);
+                show.value = d.value;
                 show.depth = d.topoDepth;
-                $("#"+self.props.name+"-json").append($("<pre>")).text(JSON.stringify(show, null, 4));
+                show.dependencies = d.deps.map(funcall);
+                show.reversedDependencies = d.rdeps.map(funcall);
+                $("#"+self.props.name+"-json").append($("<pre>")).text(JSON.stringify(show, null, 2));
             });
             this.funcs[func] = {
                 h: h,
