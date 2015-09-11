@@ -1,3 +1,6 @@
+[Check out the live demo](easyhard.github.io/dpv)
+---
+
 Overview
 ----------
 Dynamic programming (a.k.a memoization) is a very popular topic in
@@ -65,7 +68,7 @@ can not be visualize.
 There are also two features I have not implemented yet.
 
 Find out input-independent dependencies.
-====
+-------
 For now only run-time dependencies are captured since dependencies are referred by stack trace. For
 problems like 0-1 knapsack, function calls could be ruled out for the current input, but happened
 in other inputs. Capturing these dependencies are also important.
@@ -78,7 +81,7 @@ make any effects on the regular execution process, but we can still gather infor
 that `if` statement.
 
 "Best" solving order
-======
+--------
 Many dynamic programming solutions could be implemented with rolling an array to reduce space
 requirement. To demonstrate such possibility, I want to animator the the solving process with
 a "best" trace. By "best" here it means with minimum memory footprint. I feel this feature
