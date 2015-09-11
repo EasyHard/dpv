@@ -121,28 +121,34 @@ Components.Presenter = React.createClass({
     render: function () {
         return (
             <div>
+
+
             <div><h4> Animator explaination: </h4>
-            <p>{this.props.animator.comment}</p>
+            <p>{this.props.animator.comment}</p> </div>
+
             <div><spanning><svg width="30px" height="30px">
             <rect width="30px" height="30px" className="rect-boundry rect-boundry-example" style={{fill:"white"}} />
             </svg> Boundary </spanning>
-
             <spanning><svg width="30px" height="30px">
             <rect width="30px" height="30px" className="rect-first" />
             </svg> First Element </spanning>
-
             <spanning><svg width="30px" height="30px">
             <rect width="30px" height="30px" className="rect-last" />
-            </svg> Last Element </spanning>
+            </svg> Last Element </spanning></div>
+            <div >
+
+            <div id={this.props.svgdiv} style={{float:"left"}}> </div>
+
+            <div  style={{float:"left", "margin-top":"32px", "margin-left":"16px"}}><pre>
+            <code id={this.props.name + "-json"}> </code>
+            </pre></div>
 
             </div>
+
+            <div style={{clear:"left"}}></div>
+
             </div>
-            <div id={this.props.svgdiv}> </div>
-            <pre>
-            <code id={this.props.name + "-json"}> </code>
-            </pre>
-            </div>
-        )
+        );
     }
 
 });
