@@ -96,4 +96,4 @@ Components.Editor = React.createClass({
     },
 });
 
-React.render(<Components.Editor defaultFile="counting.js" name="editor" />, document.getElementById('editor-wrap'))
+React.render(<Components.Editor defaultFile="CombinationCalculator.js" name="editor" />, document.getElementById('editor-wrap'))
